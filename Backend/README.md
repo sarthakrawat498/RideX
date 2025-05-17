@@ -155,16 +155,16 @@ The server will run on the specified port (default is 3000).
   ```json
   {
     "fullname": {
-      "firstname": "Jane",
-      "lastname": "Smith"
+      "firstname": "Jane", // required, min 3 chars
+      "lastname": "Smith"  // required, min 3 chars
     },
-    "email": "jane.smith@example.com",
-    "password": "yourpassword",
+    "email": "jane.smith@example.com", // required, must be valid & unique
+    "password": "yourpassword", // required, min 6 chars
     "vehicle": {
-      "color": "Red",
-      "plate": "ABC123",
-      "capacity": 4,
-      "vehicleType": "car"
+      "color": "Red", // required, min 3 chars
+      "plate": "ABC123", // required, min 3 chars, unique
+      "capacity": 4, // required, number >= 1
+      "vehicleType": "car" // required, one of: "car", "motorcycle", "auto"
     }
   }
   ```
@@ -201,15 +201,86 @@ The server will run on the specified port (default is 3000).
     {
       "errors": [
         { "msg": "First name must be atleast 3 charcaters long", "param": "fullname.firstname" }
+        // ...other validation errors
       ]
     }
     ```
 
-> **Note:**  
-> - All fields are required.
-> - `vehicleType` must be one of: `"car"`, `"motorcycle"`, or `"auto"`.
-> - The password must be at least 6 characters long.
-> - The email must be unique and valid.
+### Captain Login
+- **Endpoint:** `POST /captains/login`
+- **Request Body:**
+  ```json
+  {
+    "email": "jane.smith@example.com", // required, must be valid
+    "password": "yourpassword" // required, min 6 chars
+  }
+  ```
+- **Response:**
+  - **200 OK**
+    ```json
+    {
+      "token": "your-auth-token",
+      "captain": {
+        // ...captain profile fields
+      }
+    }
+    ```
+  - **400 Bad Request** (if validation fails)
+    ```json
+    {
+      "errors": [
+        // ...validation errors
+      ]
+    }
+    ```
+  - **401 Unauthorized** (if credentials are invalid)
+    ```json
+    {
+      "message": "Invalid email or password"
+    }
+    ```
+
+### Captain Profile
+- **Endpoint:** `GET /captains/profile`
+- **Headers:**
+  // Authorization not required if token is sent via cookies
+- **Cookies:**
+  // token: The authentication token must be sent as a cookie
+- **Response:**
+  - **200 OK**
+    ```json
+    {
+      "captain": {
+        // ...captain profile fields
+      }
+    }
+    ```
+  - **401 Unauthorized** (if the token is missing, invalid, or blacklisted)
+    ```json
+    {
+      "message": "Unauthorized - Token not provided"
+    }
+    ```
+
+### Captain Logout
+- **Endpoint:** `GET /captains/logout`
+- **Headers:**
+  // Authorization not required if token is sent via cookies
+- **Cookies:**
+  // token: The authentication token must be sent as a cookie
+- **Response:**
+  - **200 OK**
+    ```json
+    {
+      "message": "Logged out successfully"
+    }
+    ```
+  - **401 Unauthorized** (if the token is missing, invalid, or blacklisted)
+    ```json
+    {
+      "message": "Unauthorized - Token not provided"
+    }
+    ```
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
