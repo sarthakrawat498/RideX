@@ -149,6 +149,68 @@ The server will run on the specified port (default is 3000).
     }
     ```
 
+### Captain Registration
+- **Endpoint:** `POST /captains/register`
+- **Request Body:**
+  ```json
+  {
+    "fullname": {
+      "firstname": "Jane",
+      "lastname": "Smith"
+    },
+    "email": "jane.smith@example.com",
+    "password": "yourpassword",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+  ```
+- **Response:**
+  - **201 Created**
+    ```json
+    {
+      "token": "your-auth-token",
+      "captain": {
+        "_id": "captain-id",
+        "fullname": {
+          "firstname": "Jane",
+          "lastname": "Smith"
+        },
+        "email": "jane.smith@example.com",
+        "vehicle": {
+          "color": "Red",
+          "plate": "ABC123",
+          "capacity": 4,
+          "vehicleType": "car"
+        },
+        "status": "inactive"
+      }
+    }
+    ```
+  - **400 Bad Request** (if validation fails or captain already exists)
+    ```json
+    {
+      "message": "Captain already exists"
+    }
+    ```
+    or
+    ```json
+    {
+      "errors": [
+        { "msg": "First name must be atleast 3 charcaters long", "param": "fullname.firstname" }
+      ]
+    }
+    ```
+
+> **Note:**  
+> - All fields are required.
+> - `vehicleType` must be one of: `"car"`, `"motorcycle"`, or `"auto"`.
+> - The password must be at least 6 characters long.
+> - The email must be unique and valid.
+
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
 
