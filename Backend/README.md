@@ -68,6 +68,42 @@ The server will run on the specified port (default is 3000).
     }
     ```
 
+### User Login
+- **Endpoint:** `POST /api/login`
+- **Request Body:**
+  ```json
+  {
+    "email": "john.doe@example.com",
+    "password": "yourpassword"
+  }
+  ```
+- **Response:**
+  - **200 OK**
+    ```json
+    {
+      "token": "your-auth-token",
+      "user": {
+        "firstname": "John",
+        "lastname": "Doe",
+        "email": "john.doe@example.com"
+      }
+    }
+    ```
+  - **400 Bad Request** (if validation fails)
+    ```json
+    {
+      "errors": [
+        { "msg": "Password must be at least 6 characters long", "param": "password", ... }
+      ]
+    }
+    ```
+  - **401 Unauthorized** (if credentials are invalid)
+    ```json
+    {
+      "message": "Invalid email or password"
+    }
+    ```
+
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
 
