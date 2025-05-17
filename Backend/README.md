@@ -104,6 +104,51 @@ The server will run on the specified port (default is 3000).
     }
     ```
 
+### User Profile
+- **Endpoint:** `GET /users/profile`
+- **Headers:**
+  - **Authorization:** Not required if the token is sent via cookies.
+- **Cookies:**
+  - **token:** The authentication token must be sent as a cookie.
+- **Response:**
+  - **200 OK**
+    ```json
+    {
+      "_id": "user-id",
+      "firstname": "John",
+      "lastname": "Doe",
+      "email": "john.doe@example.com",
+      "createdAt": "2025-05-01T12:00:00.000Z",
+      "updatedAt": "2025-05-10T12:00:00.000Z"
+    }
+    ```
+  - **401 Unauthorized** (if the token is missing, invalid, or blacklisted)
+    ```json
+    {
+      "message": "Unauthorized - Token not provided"
+    }
+    ```
+
+### User Logout
+- **Endpoint:** `GET /users/logout`
+- **Headers:**
+  - **Authorization:** Not required if the token is sent via cookies.
+- **Cookies:**
+  - **token:** The authentication token must be sent as a cookie.
+- **Response:**
+  - **200 OK**
+    ```json
+    {
+      "message": "Logged out successfully"
+    }
+    ```
+  - **401 Unauthorized** (if the token is missing, invalid, or blacklisted)
+    ```json
+    {
+      "message": "Unauthorized - Token not provided"
+    }
+    ```
+
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
 
