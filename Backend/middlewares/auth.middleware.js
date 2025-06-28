@@ -37,7 +37,7 @@ module.exports.authUser = async (req, res, next) => {
 
 module.exports.authCaptain = async (req,res,next) =>{
     const token = req.cookies?.token || (req.headers.authorization?.startsWith('Bearer ')&& req.headers.authorization.split(' ')[1])  ;
-    console.log(token);
+    //console.log(token);
     
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized  - Token not provided'  });
@@ -54,7 +54,7 @@ module.exports.authCaptain = async (req,res,next) =>{
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const captain = await captainModel.findById(decoded._id)
 
-   console.log('Decoded token:', jwt.decode(req.cookies?.token));
+   //console.log('Decoded token:', jwt.decode(req.cookies?.token));
     if (!captain) {
         return res.status(401).json({ message: 'Unauthorized: Captain not found' });
     }
