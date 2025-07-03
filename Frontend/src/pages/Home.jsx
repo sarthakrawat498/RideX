@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
+import {useNavigate }from 'react-router-dom'
 import black_logo from '../assets/Logo_RideX_black.png';
-import ubermap from '../assets/uber-challenge.jpg';
+import LiveTracking from "../Components/LiveTracking";
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import axios from 'axios';
@@ -10,6 +11,8 @@ import VehiclePanel from "../Components/VehiclePanel";
 import ConfirmRide from "../Components/ConfirmRide";
 import LookingForDriver from "../Components/LookingForDriver";
 import WaitingForDriver from "../Components/WaitingForDriver";
+import { SocketContext } from '../context/SocketContext'
+import { UserDataContext } from '../context/UserContext'
 
 const Home = () => {
 
@@ -33,6 +36,27 @@ const Home = () => {
     const [activeField, setActiveField] = useState(null)
     const [fare,setFare] = useState({})
     const [ vehicleType, setVehicleType ] = useState(null)
+    const [ ride , setRide ] = useState(null)
+
+    const navigate = useNavigate()
+    const { socket } = useContext(SocketContext)
+    const { user } = useContext(UserDataContext)
+    useEffect(()=>{
+       socket.emit("join",{userType :"user",userId: user._id})
+    },[user])
+
+    socket.on('ride-confirmed',ride=>{
+
+
+        setVehicleFound(false)
+        setWaitingForDriver(true)
+        setRide(ride)
+    })
+    socket.on('ride-started', ride => {
+        console.log("ride")
+        setWaitingForDriver(false)
+        navigate('/riding', { state: { ride } }) 
+    })
 
     const handlePickupChange = async (e) => {
         setPickup(e.target.value)
@@ -155,18 +179,25 @@ const Home = () => {
 
 
     }
-    async function createRide(){
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,{
+    async function createRide() {
+    try {
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`, {
             pickup,
             destination,
             vehicleType
-        },{
-            headers:{
-                Authorization : `Bearer ${localStorage.getItem('token')}`
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             }
-        })
+        });
+
         console.log(response.data);
+        setVehicleFound(true)
+    } catch (error) {
+        console.error("Ride creation failed:", error);
     }
+}
+
 
     return (
         <div className="h-screen relative overflow-hidden">
@@ -174,11 +205,7 @@ const Home = () => {
             <div onClick={() => {
                 setVehiclePanel(false)
             }} className="h-screen w-screen">
-                <img
-                    className="h-full w-full object-cover"
-                    src={ubermap}
-                    alt="Image of map"
-                />
+                <LiveTracking />
             </div>
             <div className=" flex flex-col justify-end absolute h-screen top-0 w-full ">
                 <div className="h-[30%] p-6 bg-white relative">
@@ -241,6 +268,7 @@ const Home = () => {
                 fare={fare}
                 vehicleType={vehicleType}
                 destination={destination}
+                
                 setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound} />
             </div>
             <div ref={vehicleFoundRef} className="fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-6 pt-12">
@@ -253,7 +281,11 @@ const Home = () => {
                 setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound} />
             </div>
             <div ref={waitingForDriverRef} className="fixed w-full z-10 bottom-0  bg-white px-3 py-6 pt-12">
-                <WaitingForDriver waitingForDriver={waitingForDriver} />
+                <WaitingForDriver 
+                ride = {ride}
+                setVehicleFound = {setVehicleFound}
+                setWaitingForDriver = {setWaitingForDriver}
+                waitingForDriver={waitingForDriver} />
             </div>
         </div>
     )

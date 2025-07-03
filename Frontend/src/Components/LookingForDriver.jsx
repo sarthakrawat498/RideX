@@ -13,15 +13,15 @@ const LookingForDriver = (props) => {
                     <div className='flex item-center gap-5 p-3 border-gray-500 border-b-2'>
                         <i className="text-lg ri-map-pin-user-fill"></i>
                         <div>
-                            <h3 className='text-lg font-medium'>562/11A</h3>
-                            <p className='text-sm -mt-1 text-gray-600'>{props.pickup}</p>
+                            <h3 className='text-lg font-medium'>{props.pickup?.split(',')[0] || ''}</h3>
+                            <p className='text-sm -mt-1 text-gray-600'>{props.pickup?.split(',').slice(1).join(', ') || ''}</p>
                         </div>
                     </div>
                     <div className='flex item-center gap-5 p-3 border-gray-500 border-b-2'>
                         <i className="text-lg ri-map-pin-2-fill"></i>
                         <div>
-                            <h3 className='text-lg font-medium'>562/11A</h3>
-                            <p className='text-sm -mt-1 text-gray-600'>{props.destination}</p>
+                            <h3 className='text-lg font-medium'>{props.destination?.split(',')[0] || ''}</h3>
+                            <p className='text-sm -mt-1 text-gray-600'>{props.destination?.split(',').slice(1).join(', ') || ''}</p>
                         </div>
                     </div>
                     <div className='flex item-center gap-5 p-3  '>

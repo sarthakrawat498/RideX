@@ -1,6 +1,9 @@
 import React from 'react';
 
 const ConfirmRide =(props)=>{
+    //console.log("ConfirmRide:", props.pickup);
+
+    
     return(
         <div>
             <h5 className="p-1 text-center w-[93%]  absolute top-0" onClick={() => {
@@ -13,15 +16,15 @@ const ConfirmRide =(props)=>{
                     <div className='flex item-center gap-5 p-3 border-gray-500 border-b-2'>
                         <i className="text-lg ri-map-pin-user-fill"></i>
                         <div>
-                            <h3 className='text-lg font-medium'>562/11A</h3>
-                            <p className='text-sm -mt-1 text-gray-600'>{props.pickup}</p>
+                            <h3 className='text-lg font-medium'>{props.pickup?.split(',')[0] || 'Pickup address not set'}</h3>
+                            <p className='text-sm -mt-1 text-gray-600'>{props.pickup?.split(',').slice(1).join(', ') || ''}</p>
                         </div>
                     </div>
                     <div className='flex item-center gap-5 p-3 border-gray-500 border-b-2'>
                         <i className="text-lg ri-map-pin-2-fill"></i>
                         <div>
-                            <h3 className='text-lg font-medium'>562/11A</h3>
-                            <p className='text-sm -mt-1 text-gray-600'>{props.destination}</p>
+                            <h3 className='text-lg font-medium'>{props.destination?.split(',')[0] || ''}</h3>
+                            <p className='text-sm -mt-1 text-gray-600'>{props.destination?.split(',').slice(1).join(', ') || ''}</p>
                         </div>
                     </div>
                     <div className='flex item-center gap-5 p-3  '>
@@ -33,11 +36,9 @@ const ConfirmRide =(props)=>{
                     </div>
                 </div>
                     <button onClick={()=>{
-                        props.setVehicleFound(true)
-                        props.setConfirmRidePanel(false)
-                        props.createRide()
-                    }
-
+                        props.setConfirmRidePanel(false);
+                        props.createRide();
+                        }
                     } className='w-full  bg-green-700 text-white font-semibold p-2 rounded-lg'>
                         Confirm
                     </button>
